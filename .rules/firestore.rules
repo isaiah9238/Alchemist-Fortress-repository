@@ -1,0 +1,54 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Secures the 'loops' collection. Now public for read/write.
+     * @path /loops/{loopId}
+     */
+    match /loops/{loopId} {
+      allow read, write: if true;
+    }
+    
+    /**
+     * @description Secures the 'lines' subcollection. Now public for read/write.
+     * @path /loops/{loopId}/lines/{lineId}
+     */
+    match /loops/{loopId}/lines/{lineId} {
+      allow read, write: if true;
+    }
+
+    /**
+     * @description Secures the 'comments' collection for user feedback.
+     * @path /comments/{commentId}
+     * @allow Public read and create access.
+     * @deny Users cannot edit or delete comments.
+     */
+    match /comments/{commentId} {
+      allow get, list: if true;
+      allow create: if true;
+      allow update, delete: if false; // Comments are immutable
+    }
+
+    /**
+     * @description Secures the 'derivatives' collection for AI calculation history.
+     * @path /derivatives/{derivativeId}
+     * @allow Public write access for saving calculation history.
+     * @deny Public read/update/delete access is denied.
+     */
+    match /derivatives/{derivativeId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+
+    /**
+     * @description Secures the 'workspaces' collection for saving graph configurations.
+     * @path /workspaces/{workspaceId}
+     */
+    match /workspaces/{workspaceId} {
+      allow read, write: if true;
+    }
+
+  }
+}

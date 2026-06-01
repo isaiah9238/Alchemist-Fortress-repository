@@ -1,0 +1,10 @@
+# Prevent AI indexing from eating up disk space
+node_modules/
+.next/
+.firebase/
+.genkit/
+functions/node_modules/
+functions/lib/
+out/
+build/
+*.log
