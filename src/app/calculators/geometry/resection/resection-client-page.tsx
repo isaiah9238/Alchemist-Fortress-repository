@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { Point } from '@/lib/types';
+import type { Point } from '@/types/geometry';
 
 type Unit = 'ft-us' | 'ft' | 'm';
 

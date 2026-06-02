@@ -87,8 +87,10 @@ export function SidebarNav() {
         </SidebarMenuItem>
       </SidebarGroup>
       
+      {/* --- HORIZONTAL SYSTEM GROUP --- */}
       <SidebarGroup className="py-0.5">
         <SidebarGroupLabel className="text-[8px] uppercase tracking-[0.2em] h-5">Horizontal</SidebarGroupLabel>
+        
         <SidebarMenuItem>
           <Link href="/calculators/geometry" passHref>
             <SidebarMenuButton isActive={isActive('/calculators/geometry')} className="h-7">
@@ -96,6 +98,16 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </Link>
         </SidebarMenuItem>
+
+        {/* ADDED: Intersections Link Row */}
+        <SidebarMenuItem>
+          <Link href="/calculators/geometry/intersections" passHref>
+            <SidebarMenuButton isActive={isActive('/calculators/geometry/intersections')} className="h-7 text-cyan-400">
+              <Crosshair className="size-2.5 text-cyan-400" /><span className={menuTextStyle}>Intersections</span>
+            </SidebarMenuButton>
+          </Link>
+        </SidebarMenuItem>
+
         <SidebarMenuItem>
           <Link href="/calculators/geometry/sideshot" passHref>
             <SidebarMenuButton isActive={isActive('/calculators/geometry/sideshot')} className="h-7">
@@ -103,6 +115,7 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </Link>
         </SidebarMenuItem>
+
          <SidebarMenuItem>
           <Link href="/calculators/resection" passHref>
             <SidebarMenuButton isActive={isActive('/calculators/resection')} className="h-7">
@@ -110,6 +123,7 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </Link>
         </SidebarMenuItem>
+
         <SidebarMenuItem>
           <Link href="/calculators/geometry/loop-closure" passHref>
             <SidebarMenuButton isActive={isActive('/calculators/geometry/loop-closure')} className="h-7">
@@ -117,6 +131,7 @@ export function SidebarNav() {
             </SidebarMenuButton>
           </Link>
         </SidebarMenuItem>
+
         <SidebarMenuItem>
           <Link href="/calculators/geometry/area-by-coordinates" passHref>
             <SidebarMenuButton isActive={isActive('/calculators/geometry/area-by-coordinates')} className="h-7">

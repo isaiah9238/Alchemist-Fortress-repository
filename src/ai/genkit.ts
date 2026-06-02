@@ -1,16 +1,33 @@
-import { genkit } from 'genkit';
-import { googleAI } from '@genkit-ai/google-genai';
-import { db } from '@/lib/firebase-admin';
+// src/ai/genkit.ts
+import type { 
+  CalculateDerivativeInput, CalculateDerivativeOutput,
+  CalculateIntegralInput, CalculateIntegralOutput,
+  FactorPolynomialInput, FactorPolynomialOutput,
+  LeastSquaresAdjustmentInput, LeastSquaresAdjustmentOutput,
+  SuggestToleranceStandardInput, SuggestToleranceStandardOutput,
+  CircleFitInput, CircleFitOutput 
+} from '@/types/ai';
 
-// 1. Initialize Genkit (The Brain)
-export const ai = genkit({
-  plugins: [
-    googleAI({
-      apiKey: process.env.GOOGLE_GENAI_API_KEY,
-    })
-  ],
-  model: 'googleai/gemini-2.5-flash', 
-});
+export async function calculateDerivative(input: CalculateDerivativeInput): Promise<CalculateDerivativeOutput> {
+  return { derivative: "0", simplified: "0", latex: "0" };
+}
 
-// 2. Export Authority (Firestore reference from central config)
-export const adminDb = db;
+export async function calculateIntegral(input: CalculateIntegralInput): Promise<CalculateIntegralOutput> {
+  return { integral: "0", simplified: "0", latex: "0" };
+}
+
+export async function factorPolynomial(input: FactorPolynomialInput): Promise<FactorPolynomialOutput> {
+  return { factored: "0", roots: [], latex: "0" };
+}
+
+export async function adjustTraverseLeastSquares(input: LeastSquaresAdjustmentInput): Promise<LeastSquaresAdjustmentOutput> {
+  return { adjustedPoints: [], summary: "Staged buffer entry point." };
+}
+
+export async function suggestToleranceStandard(input: SuggestToleranceStandardInput): Promise<SuggestToleranceStandardOutput> {
+  return { standardName: "N/A", description: "Staged", toleranceValue: "0", justification: "Staged" };
+}
+
+export async function runCircleFit(input: CircleFitInput): Promise<CircleFitOutput> {
+  return { center: { x: 0, y: 0 }, radius: 0, rmse: 0, observations: [], analysis: "Staged" };
+}

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -32,6 +31,7 @@ import ResidualsChart from '@/components/ResidualsChart';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import { AzimuthInput, type AzimuthPayload, dmsToDD, quadrantToDD } from '@/components/azimuth-input';
+import type { Point } from '@/types/geometry'; // Fixed path tracking to centralized folder
 
 type Unit = 'ft-us' | 'ft' | 'm';
 
@@ -175,12 +175,13 @@ export default function ResectionClientPage() {
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
+    const bodyNode = document.body;
     link.setAttribute("href", url);
     link.setAttribute("download", filename);
     link.style.visibility = 'hidden';
-    document.body.appendChild(link);
+    bodyNode.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    bodyNode.removeChild(link);
   }
 
   const calculateResection = async (obs: ClientObservation[], knownPtsData: string) => {
