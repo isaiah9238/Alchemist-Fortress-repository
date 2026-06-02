@@ -1,4 +1,3 @@
-
 export type Point = {
   id?: string;
   name?: string;

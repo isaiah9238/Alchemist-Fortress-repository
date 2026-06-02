@@ -30,7 +30,10 @@ import {
   Variable,
   FileText,
   Map,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Shield,     // Added for The Vault section
+  Activity,   // Added for monitoring / The Pulse
+  Compass     // Added for coordinates tracking / Vault Map
 } from 'lucide-react';
 import {usePathname} from 'next/navigation';
 import Link from 'next/link';
@@ -275,6 +278,40 @@ export function SidebarNav() {
           <Link href="/documents" passHref>
             <SidebarMenuButton isActive={isActive('/documents')} className="h-7">
               <FileText className="size-2.5" /><span className={menuTextStyle}>Docs</span>
+            </SidebarMenuButton>
+          </Link>
+        </SidebarMenuItem>
+      </SidebarGroup>
+
+      {/* --- NEW SECURITY & THE VAULT REFERENCE BLOCK --- */}
+      <SidebarGroup className="py-0.5 mt-2 border-t border-zinc-800/50">
+        <SidebarGroupLabel className="text-[8px] uppercase tracking-[0.2em] h-5 text-emerald-400">
+          The Vault Security
+        </SidebarGroupLabel>
+        
+        <SidebarMenuItem>
+          <Link href="/components/dashboard/VaultMap" passHref>
+            <SidebarMenuButton isActive={isActive('/components/dashboard/VaultMap')} className="h-7 hover:text-emerald-400 transition-colors">
+              <Compass className="size-2.5 text-emerald-500" />
+              <span className={menuTextStyle}>Vault Map</span>
+            </SidebarMenuButton>
+          </Link>
+        </SidebarMenuItem>
+
+        <SidebarMenuItem>
+          <Link href="/components/dashboard/ThePulse" passHref>
+            <SidebarMenuButton isActive={isActive('/components/dashboard/ThePulse')} className="h-7 hover:text-emerald-400 transition-colors">
+              <Activity className="size-2.5 text-emerald-500" />
+              <span className={menuTextStyle}>The Pulse</span>
+            </SidebarMenuButton>
+          </Link>
+        </SidebarMenuItem>
+
+        <SidebarMenuItem>
+          <Link href="/app/security/securityrules" passHref>
+            <SidebarMenuButton isActive={isActive('/app/security/securityrules')} className="h-7 hover:text-emerald-400 transition-colors">
+              <Shield className="size-2.5 text-emerald-500" />
+              <span className={menuTextStyle}>Access Rules</span>
             </SidebarMenuButton>
           </Link>
         </SidebarMenuItem>
