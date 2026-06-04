@@ -1,5 +1,20 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Alchemist Fortress Security Vault Database
+*.json
+*.vault
+fortress_db
+fortress.json
+fortress_cli.py
+vault_engine.py
+vault_manager.py
+fortress_core.vault
+cryptography.hazmat.primitives.ciphers.aead
+cryptography.hazmat.primitives.kdf.phkdf2
+cryptography.hazmat.primitives
+__pycache__
+vault
+
 # dependencies
 /node_modules
 /.pnp
@@ -44,3 +59,8 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# Alchemist Fortress Security Vault Local Data
+src/ai/vault/data/
+*.json
+*.vault
