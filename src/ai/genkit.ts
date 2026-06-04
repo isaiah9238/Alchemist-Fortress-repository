@@ -1,5 +1,5 @@
 // src/ai/genkit.ts
-import type { 
+import { 
   CalculateDerivativeInput, CalculateDerivativeOutput,
   CalculateIntegralInput, CalculateIntegralOutput,
   FactorPolynomialInput, FactorPolynomialOutput,
@@ -7,6 +7,19 @@ import type {
   SuggestToleranceStandardInput, SuggestToleranceStandardOutput,
   CircleFitInput, CircleFitOutput 
 } from '@/types/ai';
+
+/**
+ * Ambient AI Interface Object Stub
+ * Satisfies imports inside flow modules (e.g., ai-log-anomaly-detection-flow.ts)
+ */
+export const ai = {
+  defineFlow: (name: string, config: any) => {
+    return async (input: any) => ({});
+  },
+  run: async (flow: any, input: any) => {
+    return {};
+  }
+};
 
 export async function calculateDerivative(input: CalculateDerivativeInput): Promise<CalculateDerivativeOutput> {
   return { derivative: "0", simplified: "0", latex: "0" };

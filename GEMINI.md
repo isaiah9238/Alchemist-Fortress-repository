@@ -1,44 +1,180 @@
-GEMINI.md: ArithmaGen Intelligence & Architecture Directive
-🏛️ Project Identity & Context
-Name: ArithmaGen Studio
+gemini.md
 
-Stack: Next.js 15 (App Router), React 19, Genkit, Firebase (Blaze Tier).
+# ARITHMAGEN / VECTOR - CORE MATH BLUEPRINT
 
-Core Objective: High-fidelity geodetic and mathematical surveying toolkit.
+This file serves as our strict code style guide, structural constraint checklist, and architectural source of truth for the local agent workflow. 
 
-Guiding Principle: AI should augment, not replace, rigorous trigonometry. Always prioritize existing Math-based logic in src/app/calculators.
+## Architectural & Style Constraints
+1. **Absolute Statelessness:** Every function must be a pure function. No React hooks (`useState`), no state mutations, no DOM or document references, and zero canvas context bindings.
+2. **Strict TypeScript Typing:** All structural inputs and computation outputs must be strongly typed using explicit TypeScript interfaces or inline primitive object schemas.
+3. **Zero UI or Presentation Leakage:** Absolutely no string formatting logic, `.toFixed()` truncations, unit-label suffixes, or toast notification hooks (`useToast`). Return raw mathematical numbers or clean objects.
+4. **Defensive Math Engineering:** Gracefully handle edge cases such as collinear lines, parallel bearings, division by zero, and singular matrix determinants.
 
-🔧 Critical Authentication Rules (The "Sovereign" Protocol)
-Primary Key: Use process.env.GOOGLE_GENAI_API_KEY for all Genkit/Gemini interactions.
+---
 
-Legacy Cleanup: Identify and flag any references to GEMINI_API_KEY.
+## ── REFERENCE EXAMPLES (THE GOLD STANDARD) ──
 
-Security: Ensure no hardcoded AIz... strings exist in any src or functions files.
+### Example 1: Least Squares Resection Matrix Logic
+*Demonstrates rigorous iterative adjustment matrix runs, partial derivatives of azimuths, and error/covariance evaluations.*
 
-🚀 Architectural Mapping
-Central Nervous System: src/app/actions.ts is the primary bridge between the UI and AI logic.
+```typescript
+export type Point = {
+  y: number;
+  x: number;
+  name?: string;
+};
 
-The AI Brain: Transitioning Genkit logic from functions/ to src/ai/.
+export type ResectionObservation = {
+  knownPoint: Point;
+  observedAngleDD: number; // Clockwise angle from an arbitrary reference direction
+};
 
-Modular Priority: src/app/calculators/geometry contains the "Source of Truth" for COGO and curve math.
+export type ResectionOutput = {
+  y: number;
+  x: number;
+  stdY: number;
+  stdX: number;
+  residuals: number[];
+};
 
-Arithma-Sketch Bridge: src/app/arithma-sketch/ must import utilities from src/app/calculators/ to avoid logic duplication.
+export function computeLeastSquaresResection(
+  observations: ResectionObservation[]
+): ResectionOutput {
+  if (observations.length < 3) {
+    throw new Error("A minimum of 3 observed points is required for a resection adjustment.");
+  }
 
-🔍 CLI Audit Tasks
-1. Integrity & Auth Check (The "Ghost" Hunt)
-Scan all files for process.env references. Flag those not using GOOGLE_GENAI_API_KEY.
+  let sumY = 0, sumX = 0;
+  observations.forEach(o => {
+    sumY += o.knownPoint.y;
+    sumX += o.knownPoint.x;
+  });
+  let estimateY = sumY / observations.length;
+  let estimateX = sumX / observations.length;
 
-Check for conflicting Firebase Admin/Client initialization that might trigger "Invalid Grant" errors.
+  let iterations = 0;
+  let maxChange = 1.0;
+  let stdY = 0, stdX = 0;
+  let finalResiduals: number[] = [];
 
-2. Dependency & Logic Audit
-Audit package.json for AI/Firebase legacy weight. Ensure @genkit-ai/google-genai is the standard.
+  while (maxChange > 1e-4 && iterations < 20) {
+    iterations++;
+    let ATA_00 = 0, ATA_01 = 0, ATA_11 = 0;
+    let ATL_0 = 0, ATL_1 = 0;
 
-The "Device" Blueprint: Identify all Math.sin, Math.cos, and coordinate transformation functions in src. Consolidate these into a "Core Math Assets" list for the upcoming geometry-engine.ts.
+    const computedAngles: number[] = [];
+    const partialsY: number[] = [];
+    const partialsX: number[] = [];
 
-3. Arithma-Sketch "Closure" Analysis
-Analyze drawing logic in arithma-sketch/page.tsx. Flag any coordinate plotting that lacks "Loop Closure" or error-adjustment routines.
+    observations.forEach((obs) => {
+      const dN = obs.knownPoint.y - estimateY;
+      const dE = obs.knownPoint.x - estimateX;
+      const distSq = dE * dE + dN * dN;
 
-Suggest integration points for linking the "Log Parcel" button to the adjustTraverseLeastSquares flow via actions.ts.
+      let az = Math.atan2(dE, dN);
+      if (az < 0) az += 2 * Math.PI;
 
-4. Next.js 15 Optimization
-Flag Client Components in src/app/calculators that do not use useState or useEffect and can be converted to Server Components to save Blaze tier resources.
+      computedAngles.push(az);
+      partialsY.push(-dE / distSq);
+      partialsX.push(dN / distSq);
+    });
+
+    const A: number[][] = [];
+    const L: number[] = [];
+
+    for (let i = 0; i < observations.length - 1; i++) {
+      const measuredAngleDiff = (observations[i+1].observedAngleDD - observations[i].observedAngleDD) * Math.PI / 180;
+      
+      let computedAngleDiff = computedAngles[i+1] - computedAngles[i];
+      if (computedAngleDiff < -Math.PI) computedAngleDiff += 2 * Math.PI;
+      if (computedAngleDiff > Math.PI) computedAngleDiff -= 2 * Math.PI;
+
+      const dY = partialsY[i+1] - partialsY[i];
+      const dX = partialsX[i+1] - partialsX[i];
+      
+      A.push([dY, dX]);
+      
+      let deltaL = measuredAngleDiff - computedAngleDiff;
+      if (deltaL < -Math.PI) deltaL += 2 * Math.PI;
+      if (deltaL > Math.PI) deltaL -= 2 * Math.PI;
+      L.push(deltaL);
+    }
+
+    for (let i = 0; i < A.length; i++) {
+      const rowY = A[i][0];
+      const rowX = A[i][1];
+      const errorL = L[i];
+
+      ATA_00 += rowY * rowY;
+      ATA_01 += rowY * rowX;
+      ATA_11 += rowX * rowX;
+
+      ATL_0 += rowY * errorL;
+      ATL_1 += rowX * errorL;
+    }
+
+    const det = ATA_00 * ATA_11 - ATA_01 * ATA_01;
+    if (Math.abs(det) < 1e-12) {
+      throw new Error("Geometry matrix singular. Unknown location unresolvable from these baselines.");
+    }
+
+    const deltaY = (ATL_0 * ATA_11 - ATL_1 * ATA_01) / det;
+    const deltaX = (ATA_00 * ATL_1 - ATA_01 * ATL_0) / det;
+
+    estimateY += deltaY;
+    estimateX += deltaX;
+
+    maxChange = Math.max(Math.abs(deltaY), Math.abs(deltaX));
+
+    if (maxChange <= 1e-4 || iterations === 20) {
+      const degreesOfFreedom = L.length - 2;
+      let sumSqResiduals = 0;
+      
+      for (let i = 0; i < A.length; i++) {
+        const v = (A[i][0] * deltaY + A[i][1] * deltaX) - L[i];
+        finalResiduals.push(v * 180 / Math.PI * 3600);
+        sumSqResiduals += v * v;
+      }
+
+      const sigma0 = degreesOfFreedom > 0 ? Math.sqrt(sumSqResiduals / degreesOfFreedom) : 0.001;
+      stdY = sigma0 * Math.sqrt(ATA_11 / det);
+      stdX = sigma0 * Math.sqrt(ATA_00 / det);
+    }
+  }
+
+  return { y: estimateY, x: estimateX, stdY, stdX, residuals: finalResiduals };
+}
+
+
+Example 2: Coordinate Intersections (BB, BD, DD)
+Note: Refer to your localized file at src/features/intersection/math.ts for your specific completed analytical intersection logic checks.
+
+── TARGET SOURCE EXTRACTION DIRECTORY ──
+Scan the following specific frontend pages inside our directory tree. Analyze the component wrappers, strip out UI rendering code, and extract the underlying mathematical calculation logic into standalone pure functions matching our style guide constraints:
+
+1. Curves & Spiral Layout Core
+src/app/calculators/curves/compound-curve/compound-curve-client-page.tsx
+
+src/app/calculators/curves/spiral-curve/spiral-curve-client-page.tsx
+
+src/lib/spiralMath.ts
+
+2. Geometry Core Calculations
+src/app/calculators/geometry/area-by-coordinates/area-by-coordinates-client-page.tsx
+
+src/app/calculators/geometry/loop-closure/loop-closure-client-page.tsx
+
+src/app/calculators/geometry/sideshot/sideshot-client-page.tsx
+
+src/app/calculators/geometry/point-offset/point-offset-client-page.tsx
+
+3. Vertical Curve Profiles
+src/app/calculators/vertical/slope-to-horizontal/slope-to-horizontal-client-page.tsx
+
+src/app/calculators/vertical/vertical-curve/vertical-curve-client-page.tsx
+
+4. Hydrology & Geodetic Infrastructure
+src/app/calculators/storm-water/mannings-equation/mannings-equation-client-page.tsx
+
+src/app/calculators/geodetic/combined-factor/combined-factor-client-page.tsx
+
