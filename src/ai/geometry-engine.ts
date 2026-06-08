@@ -31,11 +31,10 @@ export const snapToCircle = (points: Point[]) => {
 
 export const circleSnapFlow = ai.defineFlow(
   {
-    name: 'circleSnapFlow',
     inputSchema: z.array(z.object({ x: z.number(), y: z.number() })),
     outputSchema: z.any(), 
   },
-  async (points) => snapToCircle(points)
+  async (points:points[]) => snapToCircle(points)
 );
 
 // ---------------------------------------------------------
