@@ -1,5 +1,6 @@
 {
   "npm.packageManager": "pnpm",
   "workbench.startupEditor": "readme",
-  "workbench.browser.dataStorage": "workspace"
+  "workbench.browser.dataStorage": "workspace",
+  "python.terminal.useEnvFile": true
 }
