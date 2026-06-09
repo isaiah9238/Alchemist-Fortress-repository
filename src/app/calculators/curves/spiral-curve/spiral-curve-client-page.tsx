@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { AzimuthInput, type AzimuthPayload, dmsToDD } from '@/components/azimuth-input';
-import { calculateSpiral, type SpiralElements } from '@/lib/spiralMath';
+import { calculateSpiral, type SpiralElements } from '@/features/spiralMath';
 import { SpiralResultsTable } from '@/components/spiral-results-table';
 import Link from 'next/link';
 import { HelpCircle } from 'lucide-react';

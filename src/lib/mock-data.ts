@@ -1,3 +1,4 @@
+//put in features/vault/data.ts
 export interface LogEntry {
   id: string;
   timestamp: string;

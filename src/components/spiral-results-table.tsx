@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { SpiralElements } from '@/lib/spiralMath';
+import { SpiralElements } from '@/features/spiralMath';
 import { Separator } from './ui/separator';
 
 interface Props {

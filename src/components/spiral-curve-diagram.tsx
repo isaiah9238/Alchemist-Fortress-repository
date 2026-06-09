@@ -2,8 +2,8 @@
 'use client';
 
 import React from 'react';
-import { calculateSpiral, getSpiralPoint } from '@/lib/spiralMath';
-import type { SpiralElements } from '@/lib/spiralMath';
+import { calculateSpiral, getSpiralPoint } from '@/features/spiralMath';
+import type { SpiralElements } from '@/features/spiralMath';
 
 const SpiralCurveDiagram: React.FC = () => {
   // Input parameters
